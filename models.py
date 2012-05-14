@@ -21,5 +21,8 @@ class Image(db.Model):
         except db.BadKeyError:
             pass
         if not instance:
-            instance = cls.get_by_id(int(img))
+            try:
+                instance = cls.get_by_id(int(img))
+            except ValueError:
+                pass
         return instance
