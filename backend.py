@@ -85,8 +85,6 @@ class Uploader(webapp.RequestHandler):
             # then resize according to those values
             image_content = images.resize(img, width, height)
         
-        # get the image data from the form
-        original_content = img
         # always generate a thumbnail for use on the admin page
         thumb_content = images.resize(img, 100, 100)
         
@@ -97,9 +95,6 @@ class Uploader(webapp.RequestHandler):
             image = Image()
         # and set the properties to the relevant values
         image.image = db.Blob(image_content)
-        # we always store the original here in case of errors
-        # although it's currently not exposed via the frontend
-        image.original = db.Blob(original_content)
         image.thumb = db.Blob(thumb_content)
         image.user = users.get_current_user()
                 
