@@ -52,7 +52,7 @@ class Deleter(webapp.RequestHandler):
         user = users.get_current_user()
         key = self.request.get("key")
         if key:
-            image = db.get(key)
+            image = Image.get_by_key_name_or_id(key)
             # check that we own this image
             if image.user == user:
                 image.delete()
@@ -91,7 +91,10 @@ class Uploader(webapp.RequestHandler):
         thumb_content = images.resize(img, 100, 100)
         
         # create the image object
-        image = Image()
+        if self.request.get("name"):
+            image = Image(key_name=self.request.get("name"))
+        else:
+            image = Image()
         # and set the properties to the relevant values
         image.image = db.Blob(image_content)
         # we always store the original here in case of errors

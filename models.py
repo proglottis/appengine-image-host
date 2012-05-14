@@ -12,3 +12,14 @@ class Image(db.Model):
     # all images are associated with the user who uploades them
     # this way we can make it a multi user system if that's useful
     user = db.UserProperty()
+
+    @classmethod
+    def get_by_key_name_or_id(cls, img):
+        try:
+            # it might be an invalid key so we better check
+            instance = cls.get_by_key_name(img)
+        except db.BadKeyError:
+            pass
+        if not instance:
+            instance = cls.get_by_id(int(img))
+        return instance

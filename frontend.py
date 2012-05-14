@@ -23,7 +23,7 @@ class GenericServer(webapp.RequestHandler):
         img = self.request.get("id")
         try:
             # it might be an invalid key so we better check
-            image = db.get(img)
+            image = Image.get_by_key_name_or_id(img)
         except db.BadKeyError:
             # if it is then return a 404
             self.error(404)
