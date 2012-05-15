@@ -21,15 +21,9 @@ class Index(webapp.RequestHandler):
     """
     def get(self):
         "Responds to GET requets with the admin interface"
-        # query the datastore for images owned by
-        # the current user. You can't see anyone elses images
-        # in the admin
         images = Image.all()
-        images.filter("user =", users.get_current_user())
         images.order("-date")
 
-        # we are enforcing loggins so we know we have a user
-        user = users.get_current_user()
         # we need the logout url for the frontend
         logout = users.create_logout_url("/")
 
@@ -48,14 +42,10 @@ class Deleter(webapp.RequestHandler):
     "Deals with deleting images"
     def post(self):
         "Delete a given image"
-        # we get the user as you can only delete your own images
-        user = users.get_current_user()
         key = self.request.get("key")
         if key:
             image = Image.get_by_key_name_or_id(key)
-            # check that we own this image
-            if image.user == user:
-                image.delete()
+            image.delete()
         # whatever happens rediect back to the main admin view
         self.redirect('/')
        
