@@ -2,19 +2,21 @@
 Provides a protected administrative area for uploading and deleteing images
 """
 
-import os
 import datetime
+import jinja2
+import os
+import webapp2
 
 from google.appengine.ext import db
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import images
-from google.appengine.ext.webapp import template
 from google.appengine.api import users
 
 from models import Image
 
-class Index(webapp.RequestHandler):
+jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(
+    os.path.join(os.path.dirname(__file__), 'templates')))
+
+class Index(webapp2.RequestHandler):
     """
     Main view for the application.
     Protected to logged in users only.
@@ -32,13 +34,11 @@ class Index(webapp.RequestHandler):
             "images": images,
             "logout": logout,
         }
-        # calculate the template path
-        path = os.path.join(os.path.dirname(__file__), 'templates',
-            'index.html')
+        template = jinja_environment.get_template('index.html')
         # render the template with the provided context
-        self.response.out.write(template.render(path, context))
+        self.response.out.write(template.render(context))
 
-class Deleter(webapp.RequestHandler):
+class Deleter(webapp2.RequestHandler):
     "Deals with deleting images"
     def post(self):
         "Delete a given image"
@@ -49,7 +49,7 @@ class Deleter(webapp.RequestHandler):
         # whatever happens rediect back to the main admin view
         self.redirect('/')
        
-class Uploader(webapp.RequestHandler):
+class Uploader(webapp2.RequestHandler):
     "Deals with uploading new images to the datastore"
     def post(self):
         "Upload via a multitype POST message"
@@ -94,15 +94,8 @@ class Uploader(webapp.RequestHandler):
         self.redirect('/')
                 
 # wire up the views
-application = webapp.WSGIApplication([
+app = webapp2.WSGIApplication([
     ('/', Index),
     ('/upload', Uploader),
     ('/delete', Deleter)
 ], debug=True)
-
-def main():
-    "Run the application"
-    run_wsgi_app(application)
-
-if __name__ == '__main__':
-    main()

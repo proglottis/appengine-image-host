@@ -5,14 +5,13 @@ for use on others sites and within the admin
 
 import os
 import datetime
+import webapp2
 
 from google.appengine.ext import db
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
 
 from models import Image
   
-class GenericServer(webapp.RequestHandler):
+class GenericServer(webapp2.RequestHandler):
     """
     Image server designed to handle serving png images from
     different object properties
@@ -52,14 +51,7 @@ class OriginalServer(GenericServer):
     "Serve the original uploaded image. Currently unused."
     property = 'original'
 
-application = webapp.WSGIApplication([
+app = webapp2.WSGIApplication([
     ('/i/img', ImageServer),
     ('/i/thumb', ThumbServer),
 ], debug=True)
-
-def main():
-    "Run the application"
-    run_wsgi_app(application)
-
-if __name__ == '__main__':
-    main()

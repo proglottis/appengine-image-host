@@ -38,10 +38,10 @@
             <ul id="images">
             {% for image in images %}
                 <li>
-                    <a href="/i/img?id={{image.key.id_or_name}}" title="{{image.key.id_or_name}}" class="lightbox"><img src="/i/thumb?id={{image.key.id_or_name}}" alt="{{image.key.id_or_name}}" title="{{image.key.id_or_name}}"/></a>
+                    <a href="/i/img?id={{image.key().id_or_name()}}" title="{{image.key().id_or_name()}}" class="lightbox"><img src="/i/thumb?id={{image.key().id_or_name()}}" alt="{{image.key().id_or_name()}}" title="{{image.key().id_or_name()}}"/></a>
                     <form action="/delete" method="post">
-                        <input type="hidden" value="{{image.key.id_or_name}}" name="key"/>
-                        <span>{{image.key.id_or_name}}</span>
+                        <input type="hidden" value="{{image.key().id_or_name()}}" name="key"/>
+                        <span>{{image.key().id_or_name()}}</span>
                         <input type="submit" value="Delete" name="delete"/>
                     </form>
                 </li>
